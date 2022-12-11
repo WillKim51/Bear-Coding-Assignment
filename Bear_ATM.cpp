@@ -11,16 +11,25 @@ void ShowFirstMenu();
 int NewAccount();
 int SelectAccount();
 void ShowAccountMenu();
-void ShowBalance(int id);
-void Deposit(int id);
-void Withdraw(int id);
 
-struct Account{
-    int pin; // password
-    int cBalance; // checking balance
-    int sBalance; // savings balance
+class Account{
+    private: 
+        int accountNumber;
+        int pin;
+        int cBalance = 0;
+        int sBalance = 0;
+    public:
+        Account(int accountNumber, int pin){
+            this->accountNumber = accountNumber;
+            this->pin = pin;
+        }
+        bool CheckPin(int pinInput);
+        void ShowBalance();
+        void Deposit();
+        void Withdraw();
 };
-map<int, Account> accountMap; // map of all the accounts created. 
+
+map<int, Account> accountMap;
 
 int main(){
     int option;
@@ -50,21 +59,24 @@ int main(){
                 break;
             default:
                 cout << "Invalid option" << endl;
+                continueAccountMenu = false;
         }
-        
+
+        Account& tempAccount = accountMap.find(id)->second;
+
         while(continueAccountMenu){
             ShowAccountMenu();
             cout << "Option: ";
             cin >> option;
             switch(option){
                 case 1:
-                    ShowBalance(id);
+                    tempAccount.ShowBalance();
                     break;
                 case 2:
-                    Deposit(id);
+                    tempAccount.Deposit();
                     break;
                 case 3:
-                    Withdraw(id);
+                    tempAccount.Withdraw();
                     break;
                 case 4:
                     continueAccountMenu = false;
@@ -91,20 +103,16 @@ void ShowFirstMenu(){
 }
 
 int NewAccount(){
-    int accID;
+    int id;
     int pin;
-    struct Account temp;
     cout << endl;
     cout << "Please create a new account" << endl;
     cout << "Create an account number: ";
-    cin >> accID;
+    cin >> id;
     cout << "Create a password: ";
     cin >> pin;
-    temp.pin = pin;
-    temp.cBalance = 0;
-    temp.sBalance = 0;
-    accountMap[accID] = temp;
-    return accID;
+    accountMap.insert(pair<int, Account>(id, Account(id, pin)));
+    return id;
 }
 
 int SelectAccount(){
@@ -119,7 +127,11 @@ int SelectAccount(){
     }
     cout << "Enter your pin: ";
     cin >> pin;
-    if (accountMap[id].pin != pin){
+
+    Account& tempAccount = accountMap.find(id)->second;
+    bool isPinCorrect = tempAccount.CheckPin(pin);
+
+    if (!isPinCorrect){
         cout << "Invalid pin" << endl;
         return -1; 
     }
@@ -137,13 +149,17 @@ void ShowAccountMenu(){
     cout << "5: Exit from ATM" << endl;
 }
 
-void ShowBalance(int id){
+void Account::ShowBalance(){
     cout << endl;
-    cout << "Checking account balance: " << accountMap[id].cBalance << endl;
-    cout << "Savings account balance: " << accountMap[id].sBalance << endl;
+    cout << "Checking account balance: " << cBalance << endl;
+    cout << "Savings account balance: " << sBalance << endl;
 }
 
-void Deposit(int id){
+bool Account::CheckPin(int pinInput){
+    return pinInput == pin? true : false;
+}
+
+void Account::Deposit(){
     int option;
     int amount;
     cout << endl;
@@ -157,20 +173,20 @@ void Deposit(int id){
             cout << endl;
             cout << "Enter deposit amount: ";
             cin >> amount;
-            accountMap[id].cBalance += amount;
+            cBalance += amount;
             break;
         case 2:
             cout << endl;
             cout << "Enter deposit amount: ";
             cin >> amount;
-            accountMap[id].sBalance += amount;
+            sBalance += amount;
             break;
         default:
             cout << "Invalid option" << endl;        
     }
 }
 
-void Withdraw(int id){
+void Account::Withdraw(){
     int option;
     int amount;
     cout << endl;
@@ -184,22 +200,22 @@ void Withdraw(int id){
             cout << endl;
             cout << "Enter withdraw amount: ";
             cin >> amount;
-            if(amount > accountMap[id].cBalance){
+            if(amount > cBalance){
                 cout << "Insufficient checking balance" << endl;
             }
             else{
-                accountMap[id].cBalance -= amount;
+                cBalance -= amount;
             }
             break;
         case 2:
             cout << endl;
             cout << "Enter deposit amount: ";
             cin >> amount;
-            if(amount > accountMap[id].sBalance){
+            if(amount > sBalance){
                 cout << "Insufficient savings balance" << endl;
             }
             else{
-                accountMap[id].sBalance -= amount;
+                sBalance -= amount;
             }
             break;
         default:
