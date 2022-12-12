@@ -209,7 +209,7 @@ void Account::Withdraw(){
             break;
         case 2:
             cout << endl;
-            cout << "Enter deposit amount: ";
+            cout << "Enter withdraw amount: ";
             cin >> amount;
             if(amount > sBalance){
                 cout << "Insufficient savings balance" << endl;
