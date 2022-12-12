@@ -11,10 +11,6 @@ Insert Card => PIN number => Select Account => See Balance/Deposit/Withdraw
 
 For simplification, there are only 1 dollar bills used. 
 
-## Methods
-
-
-
 ## Installation
 To clone this github repository, run the following command on your desired directory.
 ```bash
@@ -36,3 +32,10 @@ Lastly, run the executable file by running the following command.
 ```
 
 Then, you should see the initial menu pop up on your terminal screen. 
+
+## Methods
+1. Users can either choose to create a new account or insert card (entering account number)
+2. User must type in a new pin when creating a new account, or a correct pin when inserting card. 
+3. Once user account is selected, users can choose between checking account and savings account. 
+4. Once the account is selected, users can choose to show balance, deposit, or withdraw.
+5. Program continues until user selects exit option. 
